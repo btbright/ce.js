@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script src="http://code.jquery.com/jquery-latest.js"></script>
+  <link rel="stylesheet" href="http://code.jquery.com/qunit/git/qunit.css" type="text/css" media="screen" />
+<script type="text/javascript" src="http://code.jquery.com/qunit/git/qunit.js"></script>
+<script type="text/javascript" src="underscore.js"></script>
+<script>
+      //setup mock objects
+      var CEISTEST = true;
+      var chrome = {},
+        fakeBackgroundPage = {};
+      chrome.extension = {};
+      fakeBackgroundPage.ce = {};
+      fakeBackgroundPage.ce.getExposed = function(){
+        return {fakeString:"testString",fakeArray:["test","test2"]};
+      };
+      chrome.extension.getBackgroundPage = function(){
+        return fakeBackgroundPage;
+      };
+</script>
+<script type="text/javascript" src="../lib/ce.js"></script>
+  <script>
+  $(document).ready(function(){
+
+    test("Were the test properies exposed properly?", function() {
+      equal(fakeString,"testString","Fake string property exposed properly");
+      equal(fakeArray[0],"test","Fake array property exposed properly");
+    });
+
+    test("Can we expose global objects?", function() {
+      window.exposedFunc = function(){};
+      window.exposedObject = {};
+      ce.expose("exposedFunc");
+      ce.expose("exposedObject");
+      equal( typeof ce.getExposed().exposedFunc, "function", "We can expose a function" );
+      equal( typeof ce.getExposed().exposedObject, "object", "We can expose an object" );
+    });
+
+    test("Can we expose explicitly passed in objects?",function(){
+      var explicitFunc = function(){};
+      var explicitObject = {};
+      ce.expose("explicitFunc",explicitFunc);
+      ce.expose("explicitObject",explicitObject);
+      equal( typeof ce.getExposed().explicitFunc, "function", "We can expose a function" );
+      equal( typeof ce.getExposed().explicitObject, "object", "We can expose an object" );
+    });
+
+  });
+
+  </script>
+  
+</head>
+<body>
+  <h1 id="qunit-header">QUnit example</h1>
+ <h2 id="qunit-banner"></h2>
+ <div id="qunit-testrunner-toolbar"></div>
+ <h2 id="qunit-userAgent"></h2>
+ <ol id="qunit-tests"></ol>
+ <div id="qunit-fixture">test markup, will be hidden</div>
+</body>
+</html>

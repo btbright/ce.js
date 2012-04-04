@@ -7,6 +7,7 @@ A simple Chrome extension javascript helper library.
 To use, just include a reference to ce.js (or ce-min.js) on all your extension pages.
 
 For example:
+
     <script src="/js/lib/ce-min.js"></script>
 
 ## Functions

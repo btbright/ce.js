@@ -48,7 +48,7 @@ An interesting feature to note is if you reference an object in a background fun
 
 ## TODO
 * add parameter to expose to force "this" to be bound to local global scope rather than the bg page global scope
-* add method for broadcasting information to every extension page from any extension page
+* add method for cross-page pub/sub (i.e. broadcast messages to every extension page)
 
 ## License
 

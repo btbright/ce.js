@@ -30,7 +30,11 @@
 				var bgExposedFunctions = backgroundPage.ce.getExposed();
 				for (var prop in bgExposedFunctions){
 					if (bgExposedFunctions.hasOwnProperty(prop)){
-						global[prop] = bgExposedFunctions[prop];
+						if (typeof bgExposedFunctions[prop] === "function"){
+							global[prop] = Function.prototype.bind.apply(bgExposedFunctions[prop],global);
+						} else {
+							global[prop] = bgExposedFunctions[prop];
+						}
 					}
 				}
 			}
@@ -39,6 +43,24 @@
 		//Returns the object containing the exposed objects
 		var getExposed = function(){
 			return exposedFunctions;
+		};
+
+		//searches the windows for the focused window of type "normal", then gets the active tab from the window.
+		//Unfortunately, this functionality doesn't exist in the exposed chrome API
+		var getActiveTab = function(callback){
+			var activeTab,focusedWindow;
+
+			chrome.windows.getAll({populate:true},function(windowArr){
+				focusedWindow = _.find(windowArr,function(windowObj){
+					return windowObj.focused === true && windowObj.type === "normal";
+				});
+				if (focusedWindow){
+					activeTab = _.find(focusedWindow.tabs,function(tab){
+						return tab.active === true;
+					});
+				}
+				callback(activeTab);
+			});
 		};
 
 		var init = function(){
@@ -55,7 +77,8 @@
 		init();
 		return {
 			expose : expose,
-			getExposed : getExposed
+			getExposed : getExposed,
+			getActiveTab : getActiveTab
 		};
 	}(ce));
 }(this)); //not that this could be used anywhere but a chrome extension...

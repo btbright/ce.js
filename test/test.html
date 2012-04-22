@@ -8,9 +8,77 @@
 <script>
       //setup mock objects
       var CEISTEST = true;
+      var fakeWindows = [{
+              focused: true,
+              height: 874,
+              id: 1595,
+              incognito: false,
+              left: 22,
+              state: "normal",
+              tabs: [{
+                  active: false,
+                  favIconUrl: "http://blog.appharbor.com/favicon.ico",
+                  highlighted: false,
+                  id: 504,
+                  incognito: false,
+                  index: 2,
+                  pinned: false,
+                  selected: false,
+                  status: "complete",
+                  title: "Compile .NET in your browser using Compilify by Justin Rusbatch - AppHarbor",
+                  url: "http://blog.appharbor.com/2012/04/16/compile-net-in-your-browser-using-compilify-by-justin-rusbatch",
+                  windowId: 1595
+              },
+              {
+                  active: true,
+                  favIconUrl: "http://d297h9he240fqh.cloudfront.net/cache-f2668f127/favicon.png",
+                  highlighted: true,
+                  id: 1596,
+                  incognito: false,
+                  index: 0,
+                  pinned: false,
+                  selected: true,
+                  status: "complete",
+                  title: "Light Table by Chris Granger — Kickstarter",
+                  url: "http://www.kickstarter.com/projects/306316578/light-table",
+                  windowId: 1595
+              }],
+              top: 22,
+              type: "normal",
+              width: 739
+          }, {
+              focused: false,
+              height: 874,
+              id: 11,
+              incognito: false,
+              left: 0,
+              state: "normal",
+              tabs: [{
+                  active: true,
+                  favIconUrl: "http://ycombinator.com/favicon.ico",
+                  highlighted: false,
+                  id: 4,
+                  incognito: false,
+                  index: 2,
+                  pinned: false,
+                  selected: false,
+                  status: "complete",
+                  title: "Hacker News",
+                  url: "http://news.ycombinator.com/",
+                  windowId: 11
+              }],
+              top: 22,
+              type: "normal",
+              width: 739
+          }];
       var chrome = {},
         fakeBackgroundPage = {};
       chrome.extension = {};
+      chrome.windows = {
+        getAll : function(options,callback){
+          callback(fakeWindows);
+        }
+      };
       fakeBackgroundPage.ce = {};
       fakeBackgroundPage.ce.getExposed = function(){
         return {fakeString:"testString",fakeArray:["test","test2"]};
@@ -22,7 +90,7 @@
 <script type="text/javascript" src="../src/ce.js"></script>
   <script>
   $(document).ready(function(){
-
+    module("ce.expose");
     test("Were the test properies exposed properly?", function() {
       equal(fakeString,"testString","Fake string property exposed properly");
       equal(fakeArray[0],"test","Fake array property exposed properly");
@@ -46,6 +114,13 @@
       equal( typeof ce.getExposed().explicitObject, "object", "We can expose an object" );
     });
 
+    module("ce.getActiveTab");
+    asyncTest("Is the proper tab returned?",function(){
+      ce.getActiveTab(function(activeTab){
+        equal( activeTab.id, fakeWindows[0].tabs[1].id);
+        start();
+      });
+    });
   });
 
   </script>

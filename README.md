@@ -46,9 +46,23 @@ An interesting feature to note is if you reference an object in a background fun
 
     //in background.html's console window: "Where will I end up?"
 
+### ce.getActiveTab(callback)
+The currently focused/active tab is returned in the first parameter of the callback. It returns false if it can't find the focused tab. The current version of the chrome extension API does not have a method to return the currently focused tab, so this is a shortcut method to get it. If/when google exposes a method that performs the same function, this method will call the native method.
+
+An example:
+
+    //in any extension page
+
+    ce.getActiveTab(function(activeTab){
+        if (activeTab){
+            console.log("Found it!",activeTab);
+        } else {
+            console.log("Couldn't find the active tab.");
+        }
+    });
+
 ## TODO
 * add parameter to expose to force "this" to be bound to local global scope rather than the bg page global scope
-* add method for cross-page pub/sub (i.e. broadcast messages to every extension page)
 
 ## License
 
